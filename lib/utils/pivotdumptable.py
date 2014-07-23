@@ -119,10 +119,15 @@ def pivotDumpTable(table, colList, count=None, blind=True):
 
             for column in colList:
                 def _(pivotValue):
-                    if column == colList[0]:
-                        query = dumpNode.query.replace("'%s'", "%s") % (agent.preprocessField(table, column), table, agent.preprocessField(table, column), unescaper.escape(pivotValue, False))
+                    if(conf.noEscape):
+                        escapedpivot = "'%s'" % pivotValue
                     else:
-                        query = dumpNode.query2.replace("'%s'", "%s") % (agent.preprocessField(table, column), table, agent.preprocessField(table, colList[0]), unescaper.escape(pivotValue, False))
+                        escapedpivot = unescaper.escape(pivotValue, False)
+
+                    if column == colList[0]:
+                        query = dumpNode.query.replace("'%s'", "%s") % (agent.preprocessField(table, column), table, agent.preprocessField(table, column), escapedpivot)
+                    else:
+                        query = dumpNode.query2.replace("'%s'", "%s") % (agent.preprocessField(table, column), table, agent.preprocessField(table, colList[0]), escapedpivot)
 
                     query = whereQuery(query)
 
